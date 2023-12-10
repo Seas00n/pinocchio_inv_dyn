@@ -77,7 +77,7 @@ class StaggeredProjections (object):
             self.options.printLevel  = PrintLevel.MEDIUM;
         elif(self.verb>2):            
             self.options.printLevel  = PrintLevel.DEBUG_ITER;
-            print "set high print level"
+            print ("set high print level")
         self.options.enableRegularisation = True;
         self.changeContactsNumber(0);
         self.S_T = np.zeros((self.n+6,self.n));
@@ -91,7 +91,7 @@ class StaggeredProjections (object):
         
     def changeContactsNumber(self, k):
         if(self.verb>1):
-            print "[%s] Changing number of contacts from %d to %d" % (self.name, self.k, k);
+            print (("[%s] Changing number of contacts from %d to %d" % (self.name, self.k, k)))
         self.k          = k;
         self.iter       = 0;
         self.initialized_contact = False;
@@ -180,14 +180,14 @@ class StaggeredProjections (object):
             self.f_old = np.copy(self.f_new);
             
             if(self.verb>1):
-                print "Iter %d err %f resid %f alpha %.3f beta %.3f" % (self.iter, self.rel_err, self.residual, 
+                print ("Iter %d err %f resid %f alpha %.3f beta %.3f" % (self.iter, self.rel_err, self.residual,
                                                                     np.linalg.norm(self.alpha)/dt, 
-                                                                    np.linalg.norm(self.beta)/dt);
+                                                                    np.linalg.norm(self.beta)/dt))
         if(self.verb>0 and self.rel_err>self.accuracy):
-            print "[Stag-Proj] Algorithm did not converge",
-            print "Iter %d err %f resid %f alpha %.3f beta %.3f" % (self.iter, self.rel_err, self.residual, 
+            print ("[Stag-Proj] Algorithm did not converge",)
+            print ("Iter %d err %f resid %f alpha %.3f beta %.3f" % (self.iter, self.rel_err, self.residual,
                                                                     np.linalg.norm(self.alpha)/dt, 
-                                                                    np.linalg.norm(self.beta)/dt);
+                                                                    np.linalg.norm(self.beta)/dt))
 #            time.sleep(2);
                                                                     
         if(self.mu>1e-3):
@@ -211,8 +211,8 @@ class StaggeredProjections (object):
                 
                 slide_acc = 1e-2;
                 if(np.linalg.norm(v_xy[2*i:2*i+2])>slide_acc and fz[i]>10.0):
-                    print "Contact point %d is sliding, fxy/fz=(%.2f,%.2f), fz=%.1f, v=(%.2f,%.2f,%.2f)"%(i,f_xy[2*i]/fz[i],f_xy[2*i+1]/fz[i],fz[i],
-                                                                                                          v_xy[2*i],v_xy[2*i+1],ddx[i]);
+                    print ("Contact point %d is sliding, fxy/fz=(%.2f,%.2f), fz=%.1f, v=(%.2f,%.2f,%.2f)"%(i,f_xy[2*i]/fz[i],f_xy[2*i+1]/fz[i],fz[i],
+                                                                                                          v_xy[2*i],v_xy[2*i+1],ddx[i]))
 #                    time.sleep(1);
              
             ''' compute contact forces '''
@@ -223,9 +223,9 @@ class StaggeredProjections (object):
         self.f_xy = f_xy;
         
         if(np.dot(ddx,fz)>self.accuracy):
-            print  'ERROR STAG-PROJ: ddx*fz = %f' % np.dot(ddx,fz);
-            print ('                 ddx: ', ddx);
-            print ('                 fz:  ', fz);
+            print (( 'ERROR STAG-PROJ: ddx*fz = %f' % np.dot(ddx,fz)))
+            print ((('                 ddx: ', ddx)))
+            print ((('                 fz:  ', fz)))
 
         self.computationTime        = time.time()-start;
         self.t += 1;
@@ -334,17 +334,17 @@ class StaggeredProjections (object):
     def print_qp_oases_error_message(self, imode, solver_name):
         if(imode!=0 and imode!=63 and self.verb>0):
             if(imode==PyReturnValue.HOTSTART_STOPPED_INFEASIBILITY):
-                print "[%s] ERROR Qp oases HOTSTART_STOPPED_INFEASIBILITY" % solver_name; # 60
+                print ("[%s] ERROR Qp oases HOTSTART_STOPPED_INFEASIBILITY" % solver_name) # 60)
             elif(imode==PyReturnValue.MAX_NWSR_REACHED):
-                print "[%s] ERROR Qp oases RET_MAX_NWSR_REACHED" % solver_name; # 63
+                print ("[%s] ERROR Qp oases RET_MAX_NWSR_REACHED" % solver_name) # 63)
             elif(imode==PyReturnValue.STEPDIRECTION_FAILED_CHOLESKY):
-                print "[%s] ERROR Qp oases STEPDIRECTION_FAILED_CHOLESKY" % solver_name; # 68
+                print ("[%s] ERROR Qp oases STEPDIRECTION_FAILED_CHOLESKY" % solver_name) # 68)
             elif(imode==PyReturnValue.HOTSTART_FAILED_AS_QP_NOT_INITIALISED):
-                print "[%s] ERROR Qp oases HOTSTART_FAILED_AS_QP_NOT_INITIALISED" % solver_name; # 53
+                print ("[%s] ERROR Qp oases HOTSTART_FAILED_AS_QP_NOT_INITIALISED" % solver_name) # 53)
             elif(imode==PyReturnValue.INIT_FAILED_INFEASIBILITY):
-                print "[%s] ERROR Qp oases INIT_FAILED_INFEASIBILITY" % solver_name; # 37
+                print ("[%s] ERROR Qp oases INIT_FAILED_INFEASIBILITY" % solver_name) # 37)
 #                    RET_INIT_FAILED_HOTSTART = 36
             elif(imode==PyReturnValue.UNKNOWN_BUG):
-                print "[%s] ERROR Qp oases UNKNOWN_BUG" % solver_name; # 9
+                print ("[%s] ERROR Qp oases UNKNOWN_BUG" % solver_name) # 9)
             else:
-                print "[%s] ERROR Qp oases %d " % (solver_name, imode);
+                print ("[%s] ERROR Qp oases %d " % (solver_name, imode))

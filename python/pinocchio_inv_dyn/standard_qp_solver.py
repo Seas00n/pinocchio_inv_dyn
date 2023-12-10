@@ -1,4 +1,6 @@
-from abstract_solver import AbstractSolver
+import sys
+sys.path.append("/home/yuxuan/Project/pinocchio_inv_dyn/python")
+from pinocchio_inv_dyn.abstract_solver import AbstractSolver
 import numpy as np
 
 class StandardQpSolver (AbstractSolver):

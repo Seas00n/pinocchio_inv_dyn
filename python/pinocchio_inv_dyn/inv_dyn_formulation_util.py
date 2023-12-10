@@ -5,11 +5,11 @@ from numpy.random import random
 from pinocchio_inv_dyn.robot_wrapper import RobotWrapper
 import pinocchio as se3
 from pinocchio.utils import zero as zeros
-from acc_bounds_util_multi_dof import computeAccLimits
-from sot_utils import compute6dContactInequalities, crossMatrix
-from first_order_low_pass_filter import FirstOrderLowPassFilter
+from pinocchio_inv_dyn.acc_bounds_util_multi_dof import computeAccLimits
+from pinocchio_inv_dyn.sot_utils import compute6dContactInequalities, crossMatrix
+from pinocchio_inv_dyn.first_order_low_pass_filter import FirstOrderLowPassFilter
 #from convex_hull_util import compute_convex_hull, plot_convex_hull
-from geom_utils import plot_polytope
+from pinocchio_inv_dyn.geom_utils import plot_polytope
 #from multi_contact.utils import compute_GIWC, compute_support_polygon
 
 EPS = 1e-4;
@@ -206,7 +206,7 @@ class InvDynFormulation (object):
             if(self.ENABLE_FORCE_LIMITS and self.k>0):
                 self.B[self.ind_force_in, self.nv:self.nv+self.k] = np.copy(Bf);
                 self.b[self.ind_force_in] = np.copy(bf);
-#               print c, "contact inequality constraints:\n", self.B[self.ind_force_in, self.nv:self.nv+self.k], "\n", bf.T;
+#               print ( c, "contact inequality constraints:\n", self.B[self.ind_force_in, self.nv:self.nv+self.k], "\n", bf.T)
         
         if(updateConstrainedDynamics):
             self.updateConstrainedDynamics();
@@ -361,7 +361,7 @@ class InvDynFormulation (object):
                     (self.B_sp, self.b_sp) = compute_support_polygon(H, h, self.M[0,0], np.array([0.,0.,-9.81]), eliminate_redundancies=False);
                     self.B_sp *= -1.0;
                 except:
-                    print "WARNING: failed to compute support polygon using poytope projection. Gonna use convex hull instead.";
+                    print ( "WARNING: failed to compute support polygon using poytope projection. Gonna use convex hull instead.")
                     (self.B_sp, self.b_sp) = compute_convex_hull(self.contact_points[:2,:].A);
                     pass;
             
@@ -434,7 +434,7 @@ class InvDynFormulation (object):
                 c.refTrajectory.setReference(Mref);
 #                dx = np.dot(c.task.jacobian.value, self.dq);
 #                if(np.linalg.norm(dx)>EPS):
-#                    print "[InvDynForm] Contact constraint velocity: %.3f" % np.linalg.norm(dx);
+#                    print ( "[InvDynForm] Contact constraint velocity: %.3f" % np.linalg.norm(dx))
             for c in self.bilateralContactConstraints:
                 Mref = self.r.position(q, c._link_id, update_geometry=False);
                 c.refTrajectory.setReference(Mref);
@@ -640,7 +640,7 @@ class InvDynFormulation (object):
         b[n:]    = self.ddqMaxFinal;
 
         if(np.isnan(b).any()):
-            print " ****** ERROR ***** Joint acceleration limits contain nan";
+            print ( " ****** ERROR ***** Joint acceleration limits contain nan")
         
         return (B,b);
     

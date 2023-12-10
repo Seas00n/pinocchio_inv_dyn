@@ -5,7 +5,8 @@ import example_hrp2_config as conf
 
 import pinocchio as se3
 from pinocchio.utils import zero as mat_zeros
-
+import sys
+sys.path.append("/home/yuxuan/Project/pinocchio_inv_dyn/python")
 from pinocchio_inv_dyn.robot_wrapper import RobotWrapper
 from pinocchio_inv_dyn.standard_qp_solver import StandardQpSolver
 from pinocchio_inv_dyn.simulator import Simulator
@@ -91,7 +92,7 @@ def updateConstraints(t, q, v, invDynForm, contacts):
         Pi = np.matrix(PN['P']).T;
         Ni = np.matrix(PN['N']).T;
         for j in range(Pi.shape[1]):
-            print "    contact point %d in world frame:"%j, oMi.act(Pi[:,j]).T, (oMi.rotation * Ni[:,j]).T;
+            print( "    contact point %d in world frame:"%j, oMi.act(Pi[:,j]).T, (oMi.rotation * Ni[:,j]).T)
         invDynForm.addUnilateralContactConstraint(constr, Pi, Ni, conf.fMin, conf.mu);
 
     return contact_changed;
@@ -99,7 +100,7 @@ def updateConstraints(t, q, v, invDynForm, contacts):
             
 def startSimulation(q0, v0, solverId):
     j = solverId
-    print '\nGONNA INTEGRATE CONTROLLER %d' % j;
+    print( '\nGONNA INTEGRATE CONTROLLER %d' % j)
     capturePointIn = True;
     
     constrViol          = np.empty(conf.MAX_TEST_DURATION).tolist(); #list of lists of lists
@@ -128,11 +129,11 @@ def startSimulation(q0, v0, solverId):
         ang_mom[j,i]      = norm(invDynForm.getAngularMomentum());
         
         if(i%500==0):
-            print "Time %.3f... i %d" % (t, i), "Max joint vel", np.max(np.abs(v[j][:,i]));
+            print( "Time %.3f... i %d" % (t, i), "Max joint vel", np.max(np.abs(v[j][:,i])))
         
         if(i==conf.MAX_TEST_DURATION-1):
-            print "MAX TIME REACHED \n";
-            print "Max joint vel", np.max(np.abs(v[j][:,i]));
+            print( "MAX TIME REACHED \n")
+            print( "Max joint vel", np.max(np.abs(v[j][:,i])))
             final_time[j]       = t;
             final_time_step[j]  = i;
             return True;
@@ -165,28 +166,28 @@ def startSimulation(q0, v0, solverId):
         
         for cv in constrViol[i]:
             cv.time = t;
-            print cv.toString();
+            print( cv.toString())
             constrViolString += cv.toString()+'\n';
             
         ''' CHECK TERMINATION CONDITIONS '''
         constraint_errors = [con.positionError(t) for con in invDynForm.rigidContactConstraints];
         for err in constraint_errors:
             if(norm(err[:3]) > conf.MAX_CONSTRAINT_ERROR):
-                print "ERROR Time %.3f constraint error:"%t, err[:3].T;
+                print( "ERROR Time %.3f constraint error:"%t, err[:3].T)
                 return False;
                 
         ddx_c = invDynForm.Jc * dv[j][:,i] + invDynForm.dJc_v;
         constr_viol = ddx_c - invDynForm.ddx_c_des;
         if(norm(constr_viol)>EPS):
-            print "Time %.3f Constraint violation:"%(t), norm(constr_viol), ddx_c.T, "!=", invDynForm.ddx_c_des.T;
-            print "Joint torques:", torques.T
+            print( "Time %.3f Constraint violation:"%(t), norm(constr_viol), ddx_c.T, "!=", invDynForm.ddx_c_des.T)
+            print( "Joint torques:", torques.T)
             return False;
             
         # Check whether robot is falling
         if(np.sum(n_violated_ineq[j,:]) > 10):
-            print "Com velocity", np.linalg.norm(dx_com[j][:,i]);
-            print "Solver violated %d inequalities" % solvers[j].nViolatedInequalities; #, "max inequality violation", np.min(ineq[i,j,:m_in]);
-            print "ROBOT FELL AFTER %.3f s\n" % (t);
+            print( "Com velocity", np.linalg.norm(dx_com[j][:,i]))
+            print( "Solver violated %d inequalities" % solvers[j].nViolatedInequalities) #, "max inequality violation", np.min(ineq[i,j,:m_in]))
+            print( "ROBOT FELL AFTER %.3f s\n" % (t))
             final_time[j] = t;
             final_time_step[j] = i;
             for index in range(i+1,conf.MAX_TEST_DURATION):
@@ -197,10 +198,10 @@ def startSimulation(q0, v0, solverId):
         ''' ******************************************** DEBUG PRINTS ******************************************** '''
         cp_ineq = np.dot(B_sp, cp[j][:,i]) + b_sp;
         if(capturePointIn and (cp_ineq<0.0).any()):
-            print "Time %.3f WARNING capture point is outside support polygon, margin %.3f" % (t, np.min(cp_ineq))
+            print("Time %.3f WARNING capture point is outside support polygon, margin %.3f" % (t, np.min(cp_ineq)))
             capturePointIn = False;
         elif(not capturePointIn and (cp_ineq>=0.0).all()):
-            print "Time %.3f WARNING capture point got inside support polygon, margin %.3f" % (t, np.min(cp_ineq))
+            print("Time %.3f WARNING capture point got inside support polygon, margin %.3f" % (t, np.min(cp_ineq)))
             capturePointIn = True;
             
         t += dt;
@@ -210,10 +211,10 @@ def startSimulation(q0, v0, solverId):
 
 ''' *********************** BEGINNING OF MAIN SCRIPT *********************** '''
 COM_DISTANCE = 0.13
-print "Simple example to demonstrate how to use this simulation/control environment using the humanoid robot HRP-2";
-print "If everything is fine, the robot should move its center of mass of %.2f m in the y direction\n" % COM_DISTANCE;
+print( "Simple example to demonstrate how to use this simulation/control environment using the humanoid robot HRP-2")
+print( "If everything is fine, the robot should move its center of mass of %.2f m in the y direction\n" % COM_DISTANCE)
 
-np.set_printoptions(precision=2, suppress=True);
+# np.set_print(options(precision=2, suppress=True))
 date_time = datetime.now().strftime('%Y%m%d_%H%M%S');
 viewer_utils.ENABLE_VIEWER  = conf.ENABLE_VIEWER
 plot_utils.FIGURE_PATH      = '../results/test_1/'+date_time+'/'; #'_'+str(conf.SOLVER_TO_INTEGRATE).replace(' ', '_')+'/';
@@ -273,7 +274,7 @@ invDynForm.addTask(com_task, conf.w_com);
 x_com_0  =  invDynForm.x_com.copy();
 com_ineq = np.dot(B_sp, x_com_0[:2]) + b_sp;
 in_or_out = "outside" if (com_ineq<0.0).any() else "inside";
-print "initial com pos "+str(x_com_0.T)+" is "+in_or_out+" support polygon, margin: %.3f"%(np.min(com_ineq));
+print( "initial com pos "+str(x_com_0.T)+" is "+in_or_out+" support polygon, margin: %.3f"%(np.min(com_ineq)))
 
 if(SHOW_CONTACT_POINTS_IN_VIEWER):
     p = invDynForm.contact_points.copy();
@@ -323,10 +324,10 @@ for j in conf.SOLVER_TO_INTEGRATE:
     info += "Final capture point solver %d "%j +str(cp[j][:,final_time_step[j]].T)+" is "+in_or_out+" support polygon %.3f\n"%(cp_ineq);
     info += "Final max joint vel solver %d: %.3f\n"%(j, np.max(np.abs(v[j][:,final_time_step[j]])));
 info += "***********************************************************************************\n"
-print info
+print(info)
 
 if(conf.PLAY_MOTION_AT_THE_END):
     raw_input("Press Enter to play motion in real time...");    
     for s in conf.SOLVER_TO_INTEGRATE:
         simulator.viewer.play(q[s][:,:final_time_step[s]], dt, 1.0);
-    print "Computed motion finished";
+    print( "Computed motion finished")

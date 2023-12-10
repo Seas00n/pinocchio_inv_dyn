@@ -4,7 +4,7 @@ import numpy as np
 #from math import cos, sin, tan, atan, pi
 import matplotlib.pyplot as plt
 #import cdd
-import plot_utils as plut
+import pinocchio_inv_dyn.plot_utils as plut
 #from polytope_conversion_utils import poly_face_to_span, NotPolyFace
 
 NUMBER_TYPE = 'float'  # 'float' or 'fraction'
@@ -33,7 +33,7 @@ def find_intersection(a1, b1, a2, b2):
     x = np.zeros(2);
     den = (a1[0]*a2[1] - a2[0]*a1[1]);
     if(abs(den)<1e-6):
-        print "ERROR: Impossible to find intersection between two lines that are parallel";
+        print ("ERROR: Impossible to find intersection between two lines that are parallel")
         return x;
         
     if(np.abs(a1[0])>np.abs(a2[0])):
@@ -51,7 +51,7 @@ def find_intersection(a1, b1, a2, b2):
 def find_line(x1, x2):
     den = (x1[0]*x2[1] - x2[0]*x1[1]);
     if(abs(den)<1e-4):
-#        print "ERROR: x1 and x2 are too close, x1=(%f,%f), x2=(%f,%f)" % (x1[0],x1[1],x2[0],x2[1]);
+#        print ("ERROR: x1 and x2 are too close, x1=(%f,%f), x2=(%f,%f)" % (x1[0],x1[1],x2[0],x2[1]))
         return (zeros(2),-1);
 #    a = np.array([-(x1[1] - x2[1])/den, -(x2[0] - x1[0])/den]);
 #    a_norm = np.linalg.norm(a);
@@ -61,7 +61,7 @@ def find_line(x1, x2):
     a = np.array([x2[1]-x1[1], x1[0]-x2[0]]);
     a /= np.linalg.norm(a);
     b = -a[0]*x1[0] - a[1]*x1[1];
-#    print "a=(%f,%f), a2=(%f,%f), b=%f, b2=%f" % (a[0],a[1],a2[0],a2[1],b,b2);
+#    print ("a=(%f,%f), a2=(%f,%f), b=%f, b2=%f" % (a[0],a[1],a2[0],a2[1],b,b2))
     return (a,b);
 
     
@@ -79,10 +79,10 @@ def compute_triangle_area(a, b, c):
 '''
 def plot_inequalities(A, b, x_bounds, y_bounds, ls='--', color='k', ax=None, lw=8):
     if(A.shape[1]!=2):
-        print "[ERROR in plot_inequalities] matrix does not have 2 columns";
+        print ("[ERROR in plot_inequalities] matrix does not have 2 columns")
         return;
 #    if(A.shape[0]!=len(b)):
-#        print "[ERROR in plot_inequalities] matrix and vector does not have the same number of rows";
+#        print ("[ERROR in plot_inequalities] matrix and vector does not have the same number of rows")
 #        return;
 
     if(ax==None):
@@ -114,7 +114,7 @@ def plot_inequalities(A, b, x_bounds, y_bounds, ls='--', color='k', ax=None, lw=
             ax.plot(p_x, p_y, ls=ls, color=color, linewidth=lw);
         else:
             pass;
-#            print "[WARNING] Could not print one inequality as all coefficients are 0: A[%d,:]=[%f,%f]" % (i,A[i,0],A[i,1]);
+#            print ("[WARNING] Could not print one inequality as all coefficients are 0: A[%d,:]=[%f,%f]" % (i,A[i,0],A[i,1]))
     ax.set_xlim(x_bounds)
     ax.set_ylim(y_bounds)
     return ax;
@@ -131,8 +131,8 @@ def plot_polytope(A, b, V=None, color='b', ax=None, plotLines=True, lw=4):
         try:
             from polytope_conversion_utils import poly_face_to_span, NotPolyFace
             V = poly_face_to_span(A,b).T;
-        except (ValueError,NotPolyFace) as e:
-            print "WARNING: "+str(e);
+        except ValueError.NotPolyFace as e:
+            print ("WARNING: "+str(e))
 
     if(V==None):
         X_MIN = -1.;

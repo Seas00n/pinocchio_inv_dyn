@@ -55,7 +55,7 @@ def cone_span_to_face(S, eliminate_redundancies=False):
         try:
             H_matrix.canonicalize();
         except:
-            print "RuntimeError: failed to canonicalize matrix";
+            print (( "RuntimeError: failed to canonicalize matrix"))
     H = array(H_matrix);
     if(len(H.shape)<2):
 #        warnings.warn("[cone_span_to_face] H is a vector rather than a matrix. S:\n"+str(S)+"\nH:\n"+str(H));
@@ -73,7 +73,7 @@ def cone_span_to_face(S, eliminate_redundancies=False):
         A = H[:, 1:]
     else:
         b, A = H[:, 0], zeros((H.shape[0],S.shape[0]));
-    for i in xrange(H.shape[0]):
+    for i in range(H.shape[0]):
         if b[i] != 0:
             raise NotConeSpan(S)
     return -A
@@ -153,7 +153,7 @@ def poly_face_to_span(F,f):
     P = Polyhedron(F_cdd)
     V = array(P.get_generators())
     if(V.shape[0]==0):
-        print "V.shape", V.shape, "F.shape", F.shape, "f.shape", f.shape;
+        print (( "V.shape", V.shape, "F.shape", F.shape, "f.shape", f.shape))
         raise ValueError("This polytope seems to have no vertices"); 
         
     for i in xrange(V.shape[0]):
@@ -192,25 +192,25 @@ def eliminate_redundant_inequalities(A,b):
     return (A_plot, b_plot);
     
 if __name__ == "__main__":
-    print "Gonna test polytope conversion utils"
+    print ("Gonna test polytope conversion utils")
 
-    print " *** Test cone span to face ***"
+    print (" *** Test cone span to face ***")
     S = np.array([[1,-1, 1],
                   [1, 1, 2]]);
     F = cone_span_to_face(S);
-    print "Span"
-    print S
-    print "Face"
-    print F
+    print ("Span")
+    print (S)
+    print ("Face")
+    print (F)
     
-    print "\n *** Test polytope span to face ***"
+    print ("\n *** Test polytope span to face ***")
     S = np.array([[1, 1,-1, -1, 0.8,-0.3],
                   [1,-1, 1, -1,-0.9, 0.1]]);
     (F,f) = poly_span_to_face(S);
-    print "Span"
-    print S
-    print "Face"
-    print F
-    print f
+    print ("Span")
+    print (S)
+    print ("Face")
+    print (F)
+    print (f)
     
     

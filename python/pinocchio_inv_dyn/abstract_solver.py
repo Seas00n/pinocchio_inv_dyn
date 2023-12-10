@@ -81,7 +81,7 @@ class AbstractSolver (object):
         self.softInequalityIndexes = indexes;
                 
     def changeInequalityNumber(self, m_in, n=None):
-#        print "[%s] Changing number of inequality constraints from %d to %d" % (self.name, self.m_in, m_in);
+#        print ("[%s] Changing number of inequality constraints from %d to %d" % (self.name, self.m_in, m_in))
         if(n is None):
             n = self.n;
         if(m_in==self.m_in and n == self.n):
@@ -100,7 +100,7 @@ class AbstractSolver (object):
             self.options.printLevel  = PrintLevel.MEDIUM;
         elif(self.verb>2):            
             self.options.printLevel  = PrintLevel.DEBUG_ITER;
-            print "set high print level"
+            print("set high print level")
         self.options.enableRegularisation = True;
 #        self.options.enableFlippingBounds = BooleanType.FALSE
 #        self.options.initialStatusBounds  = SubjectToStatus.INACTIVE
@@ -117,13 +117,13 @@ class AbstractSolver (object):
             self.lbA = lbA.squeeze();
             self.ubA = ubA.squeeze();
         else:
-            print "[%s] ERROR. Wrong size of the constraint matrix, %d rather than %d" % (self.name,A.shape[0],self.m_in);
+            print ("[%s] ERROR. Wrong size of the constraint matrix, %d rather than %d" % (self.name,A.shape[0],self.m_in))
             
         if(lb.shape[0]==self.n and ub.shape[0]==self.n):
             self.lb = lb.squeeze();
             self.ub = ub.squeeze();
         else:
-            print "[%s] ERROR. Wrong size of the bound vectors, %d and %d rather than %d" % (self.name,lb.shape[0], ub.shape[0],self.n);
+            print ("[%s] ERROR. Wrong size of the bound vectors, %d and %d rather than %d" % (self.name,lb.shape[0], ub.shape[0],self.n))
 #        self.bounds = self.n*[(-1e10,1e10)];
         if(x0 is None):
             self.x0 = np.zeros(self.n);
@@ -173,7 +173,7 @@ class AbstractSolver (object):
                  9 : Iteration limit exceeded
              '''
             if(self.verb>0 and imode!=0 and imode!=9): #do not print error msg if iteration limit exceeded
-                print "[%s] *** ERROR *** %s" % (self.name,smode);
+                print ("[%s] *** ERROR *** %s" % (self.name,smode))
         elif(self.solver=='qpoases'):
             self.iter           = 0; #total iters of qpoases
             Hess                = self.f_cost_hess(x);
@@ -208,7 +208,7 @@ class AbstractSolver (object):
                     ineq_marg       = self.f_inequalities(x0);
                     if(not(ineq_marg<-self.INEQ_VIOLATION_THR).any()):
                         if(self.verb>0):
-                            print "[%s] Solution found is unfeasible but initial guess is feasible" % (self.name);
+                            print ("[%s] Solution found is unfeasible but initial guess is feasible" % (self.name))
                         qpUnfeasible = False;
                         x = np.copy(x0);
                                     
@@ -234,29 +234,29 @@ class AbstractSolver (object):
                         ineq_marg       = self.f_inequalities(x);
                         ineq_marg[self.softInequalityIndexes] = 1.0;
                         if((ineq_marg<-self.INEQ_VIOLATION_THR).any()):
-                            print "[%s] WARNING Problem unfeasible even without soft constraints" % (self.name), np.min(ineq_marg), imode;
+                            print ("[%s] WARNING Problem unfeasible even without soft constraints" % (self.name), np.min(ineq_marg), imode)
                             qpUnfeasible = True;
                         elif(self.verb>0):
-                            print "[%s] Initial guess is feasible for the relaxed problem" % (self.name);                    
+                            print ("[%s] Initial guess is feasible for the relaxed problem" % (self.name))                    
                     else:
-                        print "[%s] No way to get a feasible solution (no initial guess)" % (self.name), np.min(ineq_marg);
+                        print ("[%s] No way to get a feasible solution (no initial guess)" % (self.name), np.min(ineq_marg))
                 elif(self.verb>0):
-                    print "[%s] Solution found and initial guess are unfeasible, but relaxed problem is feasible" % (self.name);
+                    print ("[%s] Solution found and initial guess are unfeasible, but relaxed problem is feasible" % (self.name))
             
             if(qpUnfeasible):
                 self.print_qp_oases_error_message(imode,self.name);
 
             if(self.verb>1):
                 activeIneq      = np.count_nonzero(np.abs(ineq_marg)<1e-3);
-                print "[%s] Iter %d, active inequalities %d" % (self.name,self.iter,activeIneq);            
+                print ("[%s] Iter %d, active inequalities %d" % (self.name,self.iter,activeIneq))            
                     
             # termination conditions
             if(self.iter>=maxIter):
                 imode = 9;
                 if(self.verb>1):
-                    print "[%s] Max number of iterations reached %d" % (self.name, self.iter);
+                    print ("[%s] Max number of iterations reached %d" % (self.name, self.iter))
             if(self.qpTime>=maxTime):
-                print "[%s] Max time reached %f after %d iters" % (self.name, self.qpTime, self.iter);
+                print ("[%s] Max time reached %f after %d iters" % (self.name, self.qpTime, self.iter))
                 imode = 9;
                     
         elif(self.solver=='sqpoases'):
@@ -275,7 +275,7 @@ class AbstractSolver (object):
                 lbA = - np.dot(A,x)-self.get_linear_inequality_vector();
 #                if(self.outerIter>0):
 #                    if((lbA>0.0).any()):
-#                        print "[%s] Iter %d lbA[%d]=%f"%(self.name,self.outerIter,np.argmax(lbA),np.max(lbA));
+#                        print ("[%s] Iter %d lbA[%d]=%f"%(self.name,self.outerIter,np.argmax(lbA),np.max(lbA)))
                 Hess = self.f_cost_hess(x);
                 grad = self.f_cost_grad(x);
                 self.fx = self.f_cost(x);
@@ -301,7 +301,7 @@ class AbstractSolver (object):
                     if(len(self.softInequalityIndexes)>0 and self.outerIter==1):
                         ''' if constraints are unfeasible at first iteration remove soft inequalities '''
                         if(self.verb>1):
-                            print '[%s] Remove soft constraints' % (self.name);
+                            print ('[%s] Remove soft constraints' % (self.name))
                         self.removeSoftInequalities = True;
                         self.g[self.softInequalityIndexes]   = 1e100;
                         self.iter = 0;
@@ -309,22 +309,22 @@ class AbstractSolver (object):
                     elif(len(self.softInequalityIndexes)>0 and self.removeSoftInequalities==False):
                         ''' if constraints are unfeasible at later iteration remove soft inequalities '''
                         if(self.verb>=0):
-                            print '[%s] Remove soft constraints at iter %d' % (self.name, self.outerIter);
+                            print ('[%s] Remove soft constraints at iter %d' % (self.name, self.outerIter))
                         self.removeSoftInequalities = True;                          
                         self.g[self.softInequalityIndexes]   = 1e100;
                         continue;
                     else:
                         if((lbA>0.0).any()):
-                            print "[%s] WARNING Problem unfeasible (even without soft constraints) %f" % (self.name,np.max(lbA)), imode;
+                            print ("[%s] WARNING Problem unfeasible (even without soft constraints) %f" % (self.name,np.max(lbA)), imode)
                         if(self.verb>0):
                             ''' qp failed for some reason (e.g. max iter) '''
-                            print "[%s] WARNING imode %d ineq unfeasible iter %d: %f, max(lbA)=%f" % (
-                                    self.name, imode, self.outerIter, np.min(ineq_marg), np.max(lbA));
+                            print("[%s] WARNING imode %d ineq unfeasible iter %d: %f, max(lbA)=%f" % (
+                                    self.name, imode, self.outerIter, np.min(ineq_marg), np.max(lbA)))
                         break;  ''' if constraints are unfeasible at later iterations exit '''
                 
                 if(imode==PyReturnValue.HOTSTART_STOPPED_INFEASIBILITY):
-                    print "[%s] Outer iter %d QPoases says problem is unfeasible but constraints are satisfied: %f"%(
-                            self.name,self.outerIter,np.min(ineq_marg));
+                    print("[%s] Outer iter %d QPoases says problem is unfeasible but constraints are satisfied: %f"%(
+                            self.name,self.outerIter,np.min(ineq_marg)))
                     ind = np.where(ineq_marg<0.0)[0];
                     self.g[ind] -= ineq_marg[ind];
                     continue;
@@ -337,13 +337,13 @@ class AbstractSolver (object):
                     ineq_marg       = self.f_inequalities(x);
                     if((ineq_marg>=-self.INEQ_VIOLATION_THR).all()):
                         if(self.verb>0):
-                            print "[%s] Optimization converged in %d steps" % (self.name, self.iter);
+                            print ("[%s] Optimization converged in %d steps" % (self.name, self.iter))
                         break;
                     elif(self.verb>0):
                         v = ineq_marg<-self.INEQ_VIOLATION_THR;
-                        print (self.name, self.outerIter, "WARNING Solver converged but inequalities violated:", np.where(v), ineq_marg[v]);
+                        print ((self.name, self.outerIter, "WARNING Solver converged but inequalities violated:", np.where(v), ineq_marg[v]))
                 elif(self.verb>1):
-                    print "[%s] Optimization did not converge yet, squared Newton decrement: %f" % (self.name,newton_dec_squared);
+                    print ("[%s] Optimization did not converge yet, squared Newton decrement: %f" % (self.name,newton_dec_squared))
                 
                 # line search
                 (alpha, fc, gc, phi, old_fval, derphi) = line_search(self.f_cost, self.f_cost_grad, 
@@ -352,12 +352,12 @@ class AbstractSolver (object):
                 x_new = x+alpha*x_newton;
                 new_fx = self.f_cost(x_new);
                 if(self.verb>1):
-                    print "[%s] line search alpha = %f, fc %d, gc %d, old cost %f, new cost %f" % (self.name, alpha, fc, gc, self.fx, new_fx);
+                    print ("[%s] line search alpha = %f, fc %d, gc %d, old cost %f, new cost %f" % (self.name, alpha, fc, gc, self.fx, new_fx))
                 # Check that inequalities are still satisfied
                 ineq_marg       = self.f_inequalities(x_new);
                 if((ineq_marg<-self.INEQ_VIOLATION_THR).any()):
                     if(self.verb>1):
-                        print "[%s] WARNING some inequalities are violated with alpha=%f, gonna perform new line search." % (self.name, alpha);
+                        print ("[%s] WARNING some inequalities are violated with alpha=%f, gonna perform new line search." % (self.name, alpha))
                     k = 2.0;
                     for i in range(100):
                         alpha = min(k*alpha, 1.0);
@@ -365,10 +365,10 @@ class AbstractSolver (object):
                         ineq_marg = self.f_inequalities(x_new);
                         if((ineq_marg>=-self.INEQ_VIOLATION_THR).all()):
                             if(self.verb>1):
-                                print "[%s] With alpha=%f the solution satisfies the inequalities." % (self.name, alpha);
+                                print ("[%s] With alpha=%f the solution satisfies the inequalities." % (self.name, alpha))
                             break;
                         if(alpha==1.0):
-                            print "[%s] ERROR With alpha=1 some inequalities are violated, error: %f" % (self.name, np.min(ineq_marg));
+                            print ("[%s] ERROR With alpha=1 some inequalities are violated, error: %f" % (self.name, np.min(ineq_marg)))
                             break;
 
                 x = x_new;
@@ -377,28 +377,28 @@ class AbstractSolver (object):
                     ineq_marg       = self.f_inequalities(x);
                     activeIneq      = np.count_nonzero(np.abs(ineq_marg)<1e-3);
                     nViolIneq       = np.count_nonzero(ineq_marg<-self.INEQ_VIOLATION_THR);
-                    print "[%s] Outer iter %d, iter %d, active inequalities %d, violated inequalities %d" % (self.name,self.outerIter,self.iter,activeIneq,nViolIneq);
+                    print ("[%s] Outer iter %d, iter %d, active inequalities %d, violated inequalities %d" % (self.name,self.outerIter,self.iter,activeIneq,nViolIneq))
                 
                 # termination conditions
                 if(self.iter>=maxIter):
                     if(self.verb>1):
-                        print "[%s] Max number of iterations reached %d" % (self.name, self.iter);
+                        print ("[%s] Max number of iterations reached %d" % (self.name, self.iter))
                     imode = 9;
                     break;
                 if(maxTime<0.0):
-                    print "[%s] Max time reached %.4f s after %d out iters, %d iters, newtonDec %.6f removeSoftIneq" % (
-                        self.name, self.qpTime, self.outerIter, self.iter, newton_dec_squared), self.removeSoftInequalities;
+                    print("[%s] Max time reached %.4f s after %d out iters, %d iters, newtonDec %.6f removeSoftIneq" % (
+                        self.name, self.qpTime, self.outerIter, self.iter, newton_dec_squared), self.removeSoftInequalities)
                     imode = 9;
                     break;
                 
             self.iterationNumber = self.iter;
         else:
-            print '[%s] Solver type not recognized: %s' % (self.name, self.solver);
+            print ('[%s] Solver type not recognized: %s' % (self.name, self.solver))
             return np.zeros(self.n);
         self.computationTime        = time.time()-start;
-        ineq = self.f_inequalities(x);
-        if(self.removeSoftInequalities):
-	        ineq[self.softInequalityIndexes] = 1.0;
+        ineq = self.f_inequalities(x)
+        if self.removeSoftInequalities:
+            ineq[self.softInequalityIndexes] = 1
         self.nViolatedInequalities  = np.count_nonzero(ineq<-self.INEQ_VIOLATION_THR);
         self.nActiveInequalities    = np.count_nonzero(ineq<1e-3);
         self.imode                  = imode;
@@ -437,7 +437,7 @@ class AbstractSolver (object):
         
     def print_solution_info(self,x):
         if(self.verb>1):        
-            print (self.name, "Solution is ", x);
+            print ((self.name, "Solution is ", x))
             
     def reset(self):
         self.initialized = False;
@@ -448,7 +448,7 @@ class AbstractSolver (object):
         grad = self.f_cost_grad(x);
         grad_fd = approx_fprime(x,self.f_cost,self.epsilon);
         err = np.sqrt(sum((grad-grad_fd)**2));
-        print "[%s] Gradient error: %f" % (self.name, err);
+        print ("[%s] Gradient error: %f" % (self.name, err))
         return (grad, grad_fd);
  
     def check_hess(self, x=None):
@@ -457,27 +457,27 @@ class AbstractSolver (object):
         hess = self.f_cost_hess(x);
         hess_fd = approx_jacobian(x,self.f_cost_grad,self.epsilon);
         err = np.sqrt(np.sum((hess-hess_fd)**2));
-        print "[%s] Hessian error: %f" % (self.name, err);
+        print ("[%s] Hessian error: %f" % (self.name, err))
         return (hess, hess_fd);
         
     def print_qp_oases_error_message(self, imode, solver_name):
         if(self.verb > 0 and imode!=0 and imode!=PyReturnValue.MAX_NWSR_REACHED):
             if(imode==PyReturnValue.HOTSTART_STOPPED_INFEASIBILITY):
-                print "[%s] ERROR Qp oases HOTSTART_STOPPED_INFEASIBILITY" % solver_name; # 61
+                print ("[%s] ERROR Qp oases HOTSTART_STOPPED_INFEASIBILITY" % solver_name) # 61
             elif(imode==PyReturnValue.MAX_NWSR_REACHED):
-                print "[%s] ERROR Qp oases RET_MAX_NWSR_REACHED" % solver_name; # 64
+                print ("[%s] ERROR Qp oases RET_MAX_NWSR_REACHED" % solver_name) # 64
             elif(imode==PyReturnValue.STEPDIRECTION_FAILED_TQ):
-                print "[%s] ERROR Qp oases STEPDIRECTION_FAILED_TQ" % solver_name; # 68
+                print ("[%s] ERROR Qp oases STEPDIRECTION_FAILED_TQ" % solver_name) # 68
             elif(imode==PyReturnValue.STEPDIRECTION_FAILED_CHOLESKY):
-                print "[%s] ERROR Qp oases STEPDIRECTION_FAILED_CHOLESKY" % solver_name; # 69
+                print ("[%s] ERROR Qp oases STEPDIRECTION_FAILED_CHOLESKY" % solver_name) # 69
             elif(imode==PyReturnValue.HOTSTART_FAILED_AS_QP_NOT_INITIALISED):
-                print "[%s] ERROR Qp oases HOTSTART_FAILED_AS_QP_NOT_INITIALISED" % solver_name; # 54
+                print ("[%s] ERROR Qp oases HOTSTART_FAILED_AS_QP_NOT_INITIALISED" % solver_name) # 54
             elif(imode==PyReturnValue.INIT_FAILED_HOTSTART):
-                print "[%s] ERROR Qp oases INIT_FAILED_HOTSTART" % solver_name; # 36
+                print ("[%s] ERROR Qp oases INIT_FAILED_HOTSTART" % solver_name) # 36
             elif(imode==PyReturnValue.INIT_FAILED_INFEASIBILITY):
-                print "[%s] ERROR Qp oases INIT_FAILED_INFEASIBILITY" % solver_name; # 37
+                print ("[%s] ERROR Qp oases INIT_FAILED_INFEASIBILITY" % solver_name) # 37
             elif(imode==PyReturnValue.UNKNOWN_BUG):
-                print "[%s] ERROR Qp oases UNKNOWN_BUG" % solver_name; # 9
+                print ("[%s] ERROR Qp oases UNKNOWN_BUG" % solver_name) # 9
             else:
-                print "[%s] ERROR Qp oases %d " % (solver_name, imode);
+                print ("[%s] ERROR Qp oases %d " % (solver_name, imode))
  

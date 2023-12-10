@@ -14,7 +14,7 @@ MAX_TEST_DURATION           = 2000;
 dt                          = 1e-3;
 model_path                  = [os.getcwd()+"/../../../data"];
 urdfFileName                = model_path[0] + "/hyq_description/urdf/hyq.urdf";
-freeFlyer                   = True;
+freeFlyer                   = False;
 q0                          = np.matrix([[0.0 ,  0.0,  0.63,  0.  , -0.  ,  0.  ,  1.  , -0.51,  0.74,
                                           -0.93, -0.18, -0.38,  1.35, -0.36,  0.89, -1.19, -0.3 ,  0.19,
                                           0.79]]).T;

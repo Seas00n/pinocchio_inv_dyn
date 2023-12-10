@@ -5,7 +5,7 @@ from numpy.polynomial.polynomial import polyval
 from  numpy.linalg import pinv
 from pinocchio import SE3, log3, exp3, Motion
 from pinocchio.utils import zero as mat_zeros
-from derivative_filters import computeSecondOrderPolynomialFitting
+from pinocchio_inv_dyn.derivative_filters import computeSecondOrderPolynomialFitting
 import copy
 
 def norm(v1, v2):
@@ -426,7 +426,7 @@ class ZmpRefTrajectory (RefTrajectory):
     self.polycoeff_l = []
     self.dpolycoeff_l = []
     num_intervals = len(self.time_i)
-    print "num_intervals : ", num_intervals
+    print ("num_intervals : ", num_intervals)
 
     r_foot_p = self.r_foot_p
     l_foot_p = self.l_foot_p
@@ -590,9 +590,9 @@ class VerticalCoMTrajectory (RefTrajectory):
           
 
       if not k%2:
-        print k," x1_dot = ", x1_dot
+        print (k," x1_dot = ", x1_dot)
       else:
-        print k," x0_dot = ", x0_dot
+        print (k," x0_dot = ", x0_dot)
       
       P = np.zeros([nx,nx])
       # Position

@@ -6,7 +6,7 @@ Created on Mon Oct 26 10:20:09 2015
 """
 import numpy as np
 from numpy import pi
-from sot_utils import hrp2_jointId_2_name, TAU_MAX
+from pinocchio_inv_dyn.sot_utils import hrp2_jointId_2_name, TAU_MAX
 
 def enum(**enums):
     return type('Enum', (), enums)

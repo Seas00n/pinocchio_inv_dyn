@@ -43,8 +43,8 @@ if __name__=='__main__':
         x_filt[i] = lpf.filter_data(x[i]);
     
     std_filt = np.std(x_filt);
-    print "Standard deviation of noise after filtering at %f Hz is %f" % (FC,std_filt);
-    print "This means that its amplitude has been reduced by a factor of %f" % (1.0/std_filt);
+    print ("Standard deviation of noise after filtering at %f Hz is %f" % (FC,std_filt))
+    print ("This means that its amplitude has been reduced by a factor of %f" % (1.0/std_filt))
     plt.plot(x, 'b');
     plt.plot(x_filt, 'r');
     plt.show();

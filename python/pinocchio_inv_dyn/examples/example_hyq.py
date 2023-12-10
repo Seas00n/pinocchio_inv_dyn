@@ -3,7 +3,8 @@ Simple example of how to use this simulation/control environment
 '''
 
 import example_hyq_config as conf
-
+import sys
+sys.path.append("/home/yuxuan/Project/pinocchio_inv_dyn/python")
 from pinocchio_inv_dyn.robot_wrapper import RobotWrapper
 from pinocchio_inv_dyn.standard_qp_solver import StandardQpSolver
 from pinocchio_inv_dyn.simulator import Simulator
@@ -62,7 +63,7 @@ def updateConstraints(t, i, q, v, invDynForm, contacts):
     for active_constr in invDynForm.rigidContactConstraints:
         if(active_constr.name not in contacts.keys()):
             invDynForm.removeUnilateralContactConstraint(active_constr.name);
-            print "Time %.3f Removing constraint and adding task"%t, active_constr.name;
+            print ("Time %.3f Removing constraint and adding task"%t, active_constr.name)
             contact_changed =True;
 
     for name in contacts:
@@ -81,11 +82,11 @@ def updateConstraints(t, i, q, v, invDynForm, contacts):
         constr.kv = conf.kd_constr;
         constr.mask(conf.constraint_mask);
 
-        print "Adding contact", name, ", contact vel", invDynForm.r.frameVelocity(fid).vector[conf.constraint_mask].T;        
+        print ("Adding contact", name, ", contact vel", invDynForm.r.frameVelocity(fid).vector[conf.constraint_mask].T)        
         
         Pi = conf.DEFAULT_CONTACT_POINTS;   # contact points is expressed in local frame
         Ni = oMi.rotation.T * conf.DEFAULT_CONTACT_NORMALS; # contact normal is in world frame
-        print "    contact point in world frame:", oMi.act(Pi).T, (oMi.rotation * Ni).T;
+        print ("    contact point in world frame:", oMi.act(Pi).T, (oMi.rotation * Ni).T)
         invDynForm.addUnilateralContactConstraint(constr, Pi, Ni, conf.fMin, conf.mu);
         if(t>0):
             invDynForm.removeTask(name);
@@ -108,7 +109,7 @@ def createSimulator(q0, v0):
         
 def startSimulation(q0, v0, solverId):
     j = solverId
-    print '\nGONNA INTEGRATE CONTROLLER %d' % j;
+    print ('\nGONNA INTEGRATE CONTROLLER %d' % j)
     
     q[j][:,0] = q0;
     v[j][:,0] = v0;    
@@ -140,11 +141,11 @@ def startSimulation(q0, v0, solverId):
         dx_com[j][:,i]    = np.matrix.copy(invDynForm.dx_com);      # from the solver view-point
 
         if(i%100==0):
-            print "Time %.3f... i %d" % (t, i), "Max joint vel %.2f"%np.max(np.abs(v[j][:,i]));
+            print ("Time %.3f... i %d" % (t, i), "Max joint vel %.2f"%np.max(np.abs(v[j][:,i])))
         
         if(i==conf.MAX_TEST_DURATION-1):
-            print "MAX TIME REACHED \n";
-            print "Max joint vel", np.max(np.abs(v[j][:,i]));
+            print ("MAX TIME REACHED \n")
+            print ("Max joint vel", np.max(np.abs(v[j][:,i])))
             final_time[j]       = t;
             final_time_step[j]  = i;
             return True;
@@ -177,28 +178,28 @@ def startSimulation(q0, v0, solverId):
         
         for cv in constrViol[i]:
             cv.time = t;
-            print cv.toString();
+            print (cv.toString())
             constrViolString += cv.toString()+'\n';
             
         ''' CHECK TERMINATION CONDITIONS '''
         constraint_errors = [con.positionError(t) for con in invDynForm.rigidContactConstraints];
         for err in constraint_errors:
             if(norm(err) > conf.MAX_CONSTRAINT_ERROR):
-                print "ERROR Time %.3f constraint error:"%t, err.T;
+                print ("ERROR Time %.3f constraint error:"%t, err.T)
                 return False;
 
         ddx_c = invDynForm.Jc * dv[j][:,i] + invDynForm.dJc_v            
         constr_viol = ddx_c - invDynForm.ddx_c_des;
         if(norm(constr_viol)>EPS):
-            print "ERROR Time %.3f Constraint violation:"%(t), norm(constr_viol), ddx_c.T, "!=", invDynForm.ddx_c_des.T;
-            print "Joint torques:", torques.T
+            print ("ERROR Time %.3f Constraint violation:"%(t), norm(constr_viol), ddx_c.T, "!=", invDynForm.ddx_c_des.T)
+            print ("Joint torques:", torques.T)
             return False;
             
         # Check whether robot is falling
         if(np.sum(n_violated_ineq[:,j]) > 10 or norm(dx_com[j][:,i])>conf.MAX_COM_VELOCITY):
-            print "ERROR Com velocity", np.linalg.norm(dx_com[j][:,i]);
-            print "      Solver violated %d inequalities" % solvers[j].nViolatedInequalities; #, "max inequality violation", np.min(ineq[i,j,:m_in]);
-            print "      ROBOT FELL AFTER %.3f s\n" % (t);
+            print ("ERROR Com velocity", np.linalg.norm(dx_com[j][:,i]))
+            print ("      Solver violated %d inequalities" % solvers[j].nViolatedInequalities) #, "max inequality violation", np.min(ineq[i,j,:m_in]))
+            print ("      ROBOT FELL AFTER %.3f s\n" % (t))
             final_time[j] = t;
             final_time_step[j] = i;
             for index in range(i+1,conf.MAX_TEST_DURATION):
@@ -211,8 +212,8 @@ def startSimulation(q0, v0, solverId):
 
 ''' *********************** BEGINNING OF MAIN SCRIPT *********************** '''
 COM_DISTANCE = 0.3
-print "Simple example to demonstrate how to use this simulation/control environment using the quadruped robot HyQ";
-print "If everything is fine, the robot should move its center of mass of %.2f m in the negative x direction\n" % COM_DISTANCE;
+print ("Simple example to demonstrate how to use this simulation/control environment using the quadruped robot HyQ")
+print ("If everything is fine, the robot should move its center of mass of %.2f m in the negative x direction\n" % COM_DISTANCE)
     
 np.set_printoptions(precision=2, suppress=True);
 date_time = datetime.now().strftime('%Y%m%d_%H%M%S');
@@ -225,13 +226,15 @@ plot_utils.LINE_ALPHA       = conf.LINE_ALPHA;
 
 
 T = conf.MAX_TEST_DURATION
-print "Max duration of the simulation in time steps", T;
+print ("Max duration of the simulation in time steps", T)
 
 ''' CREATE CONTROLLER AND SIMULATOR '''
 if(conf.freeFlyer):
-    robot = RobotWrapper(conf.urdfFileName, conf.model_path, root_joint=se3.JointModelFreeFlyer());
+    model = se3.buildModelsFromUrdf(conf.urdfFileName, conf.model_path+"/hyq_description/meshes/")
+    robot = RobotWrapper(model, conf.model_path, root_joint=se3.JointModelFreeFlyer());
 else:
-    robot = RobotWrapper(conf.urdfFileName, conf.model_path, None);
+    model = se3.buildModelsFromUrdf(conf.urdfFileName, conf.model_path)
+    robot = RobotWrapper(model, conf.model_path, None);
 nq = robot.nq;
 nv = robot.nv;
 dt = conf.dt;
@@ -287,10 +290,10 @@ for s in conf.SOLVER_TO_INTEGRATE:
 #    cProfile.run('startSimulation(q0, v0, s);');
 
 if(conf.PLAY_MOTION_AT_THE_END):
-    print "Gonna play computed motion";
+    print ("Gonna play computed motion")
     sleep(1);
     simulator.viewer.play(q[s], dt, 1.0);
-    print "Computed motion finished";
+    print ("Computed motion finished")
 
 if(conf.SHOW_FIGURES and conf.PLOT_COM_TRAJ):
     f, ax = plot_utils.create_empty_figure(3, 1);

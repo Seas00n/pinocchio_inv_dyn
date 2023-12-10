@@ -263,10 +263,10 @@ def solveHierarchicalLeastSquares(A_list, b_list, damping=1e-4, zero_thr=1e-5):
     x = np.zeros(n);
     for i in range(len(A_list)):
         if(A_list[i].shape[0] != b_list[i].shape[0]):
-            print "[solveHierarchicalLeastSquares] ERROR shape of A[%d] and b[%d] do not match"%(i,i), A_list[i].shape[0], b_list.shape[0];
+            print ("[solveHierarchicalLeastSquares] ERROR shape of A[%d] and b[%d] do not match"%(i,i), A_list[i].shape[0], b_list.shape[0])
             return None;
         if(A_list[i].shape[1] != n):
-            print "[solveHierarchicalLeastSquares] ERROR shape of A[%d] do not match shape of A[0]"%(i,i), A_list[i].shape[1], n;
+            print ("[solveHierarchicalLeastSquares] ERROR shape of A[%d] do not match shape of A[0]"%(i,i), A_list[i].shape[1], n)
             return None
         A = np.dot(A_list[i], N);
         b = b_list[i] - np.dot(A_list[i], x);
@@ -349,7 +349,7 @@ def solveLeastSquare(A, b, lb=None, ub=None, A_in=None, lb_in=None, ub_in=None, 
         imode = qpOasesSolver.init(Hess, grad, A_in, lb, ub, lb_in, ub_in, maxActiveSetIter, maxComputationTime);
     x = np.empty(n);
     qpOasesSolver.getPrimalSolution(x);
-    #print "QP cost:", 0.5*(np.linalg.norm(np.dot(A, x)-b)**2);
+    #print ("QP cost:", 0.5*(np.linalg.norm(np.dot(A, x)-b)**2))
     return (imode, np.asmatrix(x).T);
     
     
@@ -441,9 +441,9 @@ if __name__=="__main__":
     qSot = pinocchio_2_sot(q);
     qPino = sot_2_pinocchio(qSot);
     if(np.linalg.norm(q-qPino) > 1e-6):
-        print "Error in conversion pino-sot-pino"
-        print q
-        print qPino
+        print ("Error in conversion pino-sot-pino")
+        print (q)
+        print (qPino)
         
     q =  np.array([ 0.  ,  0.  ,  0.62,  0.5  ,  0.3  ,  -0.2  ,  0.  ,  0.  , -0.15,
                         0.87, -0.72,  0.  ,  0.  ,  0.  , -0.75,  0.87, -0.12,  0.  ,
@@ -452,6 +452,6 @@ if __name__=="__main__":
     qPino = sot_2_pinocchio(q);
     qSot  = pinocchio_2_sot(qPino);
     if(np.linalg.norm(q-qSot) > 1e-6):
-        print "Error in conversion sot-pino-sot"
-        print q
-        print qSot
+        print ("Error in conversion sot-pino-sot")
+        print (q)
+        print (qSot)

@@ -60,10 +60,10 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       </geometry>
     </collision>
   </link>
-  <gazebo reference="trunk">
+  <!-- <gazebo reference="trunk">
     <mu1>0.9</mu1>
     <mu2>0.9</mu2>
-  </gazebo>
+  </gazebo> -->
   <!-- LF leg -->
   <joint name="lf_haa_joint" type="revolute">
     <origin rpy="0 1.57079632679 3.14159265359" xyz="0.3735 0.207 0"/>
@@ -173,7 +173,7 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       </geometry>
     </collision>
   </link>
-  <transmission name="lf_haa_trans">
+  <!-- <transmission name="lf_haa_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="lf_haa_joint">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
@@ -182,8 +182,8 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
-  <transmission name="lf_hfe_upper_trans">
+  </transmission> -->
+  <!-- <transmission name="lf_hfe_upper_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="lf_hfe_joint">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
@@ -192,8 +192,8 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
-  <transmission name="lf_kfe_trans">
+  </transmission> -->
+  <!-- <transmission name="lf_kfe_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="lf_kfe_joint">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
@@ -202,8 +202,8 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
-  <gazebo reference="lf_lowerleg">
+  </transmission> -->
+  <!-- <gazebo reference="lf_lowerleg">
     <kp>1000000.0</kp>
     <kd>100.0</kd>
     <mu1>1.5</mu1>
@@ -211,7 +211,7 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
     <fdir1>1 0 0</fdir1>
     <maxVel>1.0</maxVel>
     <minDepth>0.00</minDepth>
-  </gazebo>
+  </gazebo> -->
   <!-- RF leg -->
   <joint name="rf_haa_joint" type="revolute">
     <origin rpy="0 1.57079632679 0" xyz="0.3735 -0.207 0"/>
@@ -321,7 +321,7 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       </geometry>
     </collision>
   </link>
-  <transmission name="rf_haa_trans">
+  <!-- <transmission name="rf_haa_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rf_haa_joint">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
@@ -350,8 +350,8 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
-  <gazebo reference="rf_lowerleg">
+  </transmission> -->
+  <!-- <gazebo reference="rf_lowerleg">
     <kp>1000000.0</kp>
     <kd>100.0</kd>
     <mu1>1.5</mu1>
@@ -359,7 +359,7 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
     <fdir1>1 0 0</fdir1>
     <maxVel>1.0</maxVel>
     <minDepth>0.00</minDepth>
-  </gazebo>
+  </gazebo> -->
   <!-- LH leg -->
   <joint name="lh_haa_joint" type="revolute">
     <origin rpy="0 1.57079632679 3.14159265359" xyz="-0.3735 0.207 0"/>
@@ -469,7 +469,7 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       </geometry>
     </collision>
   </link>
-  <transmission name="lh_haa_trans">
+  <!-- <transmission name="lh_haa_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="lh_haa_joint">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
@@ -498,8 +498,8 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
-  <gazebo reference="lh_lowerleg">
+  </transmission> -->
+  <!-- <gazebo reference="lh_lowerleg">
     <kp>1000000.0</kp>
     <kd>100.0</kd>
     <mu1>1.5</mu1>
@@ -507,7 +507,7 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
     <fdir1>1 0 0</fdir1>
     <maxVel>1.0</maxVel>
     <minDepth>0.00</minDepth>
-  </gazebo>
+  </gazebo> -->
   <!-- RH leg -->
   <joint name="rh_haa_joint" type="revolute">
     <origin rpy="0 1.57079632679 0" xyz="-0.3735 -0.207 0"/>
@@ -617,7 +617,7 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       </geometry>
     </collision>
   </link>
-  <transmission name="rh_haa_trans">
+  <!-- <transmission name="rh_haa_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rh_haa_joint">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
@@ -646,8 +646,8 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
-  <gazebo reference="rh_lowerleg">
+  </transmission> -->
+  <!-- <gazebo reference="rh_lowerleg">
     <kp>1000000.0</kp>
     <kd>100.0</kd>
     <mu1>1.5</mu1>
@@ -655,20 +655,19 @@ is the world frame). For more, see http://www.ros.org/wiki/xacro -->
     <fdir1>1 0 0</fdir1>
     <maxVel>1.0</maxVel>
     <minDepth>0.00</minDepth>
-  </gazebo>
+  </gazebo> -->
   <!-- IMU trunk -->
-  <xacro:microstrain_3dmgx325_imu imu_name="3dmgx325_trunk_imu" imu_topic="trunk_imu/data" parent="trunk" stdev="0.00017" update_rate="100.0">
+  <!-- <xacro:microstrain_3dmgx325_imu imu_name="3dmgx325_trunk_imu" imu_topic="trunk_imu/data" parent="trunk" stdev="0.00017" update_rate="100.0">
     <origin rpy="0 -3.14159265359 0" xyz="0.3 0 0.095"/>
-  </xacro:microstrain_3dmgx325_imu>
+  </xacro:microstrain_3dmgx325_imu> -->
   <!-- Velodyne -->
-  <xacro:velodyne name="trunk_mount" parent="trunk">
+  <!-- <xacro:velodyne name="trunk_mount" parent="trunk">
     <origin rpy="0 0 0" xyz="0.39 0 0.269"/>
-  </xacro:velodyne>
+  </xacro:velodyne> -->
   <!-- PTU unit -->
-  <xacro:ptu_d46 name="ptu" parent="trunk">
+  <!-- <xacro:ptu_d46 name="ptu" parent="trunk">
     <origin rpy="-0.013127 0.569257 -0.007748" xyz="0.657353 0.015447 0.119533"/>
-    <!--		<origin xyz="0.667353 -0.010101 0.160544" rpy="0.043239 0.569257 0.041771"/>-->
-  </xacro:ptu_d46>
+  </xacro:ptu_d46> -->
   <!-- Asus Xtion Pro -->
   <!--<origin xyz="0 0.005 0.036" rpy="0 0 0"/> with Bumblebee setup -->
   <!--<origin xyz="0 0 0.04397" rpy="0 0 0"/> with Vislab setup -->

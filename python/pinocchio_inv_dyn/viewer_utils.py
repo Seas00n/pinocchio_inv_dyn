@@ -18,7 +18,7 @@ import numpy as np
 from numpy.matlib import zeros
 from numpy.linalg import norm
 
-from first_order_low_pass_filter import FirstOrderLowPassFilter
+from pinocchio_inv_dyn.first_order_low_pass_filter import FirstOrderLowPassFilter
 
 ENABLE_VIEWER = True;
     
@@ -130,11 +130,11 @@ class Viewer(object):
                 if(timeLeft>0.0):
                     sleep(timeLeft);
                 if(timeLeft<0.0):
-                    print "WARNING: viewer is too slow, time left:", timeLeft;
+                    print ( "WARNING: viewer is too slow, time left:", timeLeft)
                 self.robot.viewer.gui.refresh();
                 lastRefreshTime = time();
                 if(print_time_every>0.0 and t*dt%print_time_every==0.0):
-                    print "%.1f"%(t*dt);
+                    print ( "%.1f"%(t*dt))
                     
     ''' multi_q is a dictionary that maps the name of the robot to its trajectory '''
     def playMultiRobot(self, multi_q, dt, slow_down_factor=1, print_time_every=-1.0):
@@ -150,11 +150,11 @@ class Viewer(object):
                 if(timeLeft>0.0):
                     sleep(timeLeft);
 #                else:
-#                    print "Viewer::playMultiRobot too slow, timeLeft=",timeLeft;
+#                    print ( "Viewer::playMultiRobot too slow, timeLeft=",timeLeft)
                 self.robot.viewer.gui.refresh();
                 lastRefreshTime = time();
                 if(print_time_every>0.0 and t*dt%print_time_every==0.0):
-                    print "%.1f"%(t*dt);
+                    print ( "%.1f"%(t*dt))
                 
     def activateMouseCamera(self):
         if(ENABLE_VIEWER):

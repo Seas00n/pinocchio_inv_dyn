@@ -4,11 +4,11 @@ from numpy.random import random
 from pinocchio_inv_dyn.robot_wrapper import RobotWrapper
 import pinocchio as se3
 #from staggered_projections import StaggeredProjections
-from constraint_violations import ForceConstraintViolation, PositionConstraintViolation, VelocityConstraintViolation, TorqueConstraintViolation, ConstraintViolationType
-from first_order_low_pass_filter import FirstOrderLowPassFilter
+from pinocchio_inv_dyn.constraint_violations import ForceConstraintViolation, PositionConstraintViolation, VelocityConstraintViolation, TorqueConstraintViolation, ConstraintViolationType
+from pinocchio_inv_dyn.first_order_low_pass_filter import FirstOrderLowPassFilter
 import time
 from pinocchio.explog import exp
-from viewer_utils import Viewer
+from pinocchio_inv_dyn.viewer_utils import Viewer
 
 
 EPS = 1e-4;
@@ -217,7 +217,7 @@ class Simulator (object):
                     found = True;
                     break;
             if(found==False):
-                print "SIMULATOR: contact constraint %s cannot be removed!" % constr_name;
+                print ("SIMULATOR: contact constraint %s cannot be removed!" % constr_name)
             self.updateInequalityData();
         
 #    def addRightFootContactConstraint(self):
@@ -270,10 +270,10 @@ class Simulator (object):
     def setPositions(self, q, updateConstraintReference=True):
 #        for i in range(self.nq):
 #            if( q[i]>self.qMax[i]+1e-4 ):
-#                print "SIMULATOR Joint %d > upper limit, q-qMax=%f deg" % (i,60*(self.q[i]-self.qMax[i]));
+#                print ("SIMULATOR Joint %d > upper limit, q-qMax=%f deg" % (i,60*(self.q[i]-self.qMax[i])))
 #                q[i] = self.qMax[i]-1e-4;
 #            elif( q[i]<self.qMin[i]-1e-4 ):
-#                print "SIMULATOR Joint %d < lower limit, qMin-q=%f deg" % (i,60*(self.qMin[i]-self.q[i]));
+#                print ("SIMULATOR Joint %d < lower limit, qMin-q=%f deg" % (i,60*(self.qMin[i]-self.q[i])))
 #                q[i] = self.qMin[i]+1e-4;
         self.q = np.matrix.copy(q);
         self.viewer.updateRobotConfig(q);
@@ -293,7 +293,7 @@ class Simulator (object):
 #                    if(c.opPointModif.position.value[2][3] < self.GROUND_HEIGHT):
 #                        c.ref = c.opPointModif.position.value;
 #                        self.rigidContactConstraints = self.rigidContactConstraints + [c,];
-#                        print "[SIMULATOR::setPositions] Collision detected for constraint %s" % c.name;
+#                        print ("[SIMULATOR::setPositions] Collision detected for constraint %s" % c.name)
 #                        
 #            self.x_c_init[0:3]  = np.array(self.constr_lfoot.opPointModif.position.value)[0:3,3];
 #            self.x_c_init[6:9]  = np.array(self.constr_rfoot.opPointModif.position.value)[0:3,3];
@@ -416,7 +416,7 @@ class Simulator (object):
 #                            self.rigidContactConstraints.remove(c);
 #                            constraintsChanged = True;
 #                        elif(self.verb>0):
-#                            print "Collision lost for constraint %s, but I'm gonna keep it because previous normal force was %f" % (c.name, self.f[3*j+2]);                        
+#                            print ("Collision lost for constraint %s, but I'm gonna keep it because previous normal force was %f" % (c.name, self.f[3*j+2]))                        
 #                else:
 #                    if(c.opPointModif.position.value[2][3] <= self.GROUND_HEIGHT):
 #                        c.ref = c.opPointModif.position.value;
@@ -486,8 +486,8 @@ class Simulator (object):
 #            self.f_rh_local[3:] = np.dot(self.R_rh.T, self.f_rh[3:]);
 #            self.h_hat = self.h_hat - np.dot(self.J_rh.transpose(), self.f_rh_local);
 #            if(self.verb>0):
-#                print "SIM Wall force (local frame)", self.f_rh, 'pos (world frame) %.3f'%self.x_rh[0];
-#                print "Hand vel (world frame)", dx_rh_w, 'pos (world frame) %.3f'%self.x_rh[0];
+#                print ("SIM Wall force (local frame)", self.f_rh, 'pos (world frame) %.3f'%self.x_rh[0])
+#                print ("Hand vel (world frame)", dx_rh_w, 'pos (world frame) %.3f'%self.x_rh[0])
 #            
 #            
 #        ''' Compute C and c such that y = C*tau + c, where y = [dv, f, tau] '''
@@ -556,7 +556,7 @@ class Simulator (object):
         self.dv = np.matrix.copy(dv);
         
         if(abs(norm(self.q[3:7])-1.0) > EPS):
-            print "SIMULATOR ERROR Time %.3f "%t, "norm of quaternion is not 1=%f" % norm(self.q[3:7]);
+            print ("SIMULATOR ERROR Time %.3f "%t, "norm of quaternion is not 1=%f" % norm(self.q[3:7]))
             
         ''' Integrate velocity and acceleration '''
         v_mean = dt*(self.v + 0.5*dt*self.dv);
@@ -568,10 +568,10 @@ class Simulator (object):
             ind_vel = np.where(np.abs(self.v) > self.DQ_MAX)[0].squeeze();
             ind_vel = np.array([ind_vel]) if len(ind_vel.shape)==0 else ind_vel;
             for i in ind_vel:
-                print 'i=', i, ind_vel
+                print('i=', i, ind_vel)
                 res = res + [VelocityConstraintViolation(self.t, i-7, self.v[i,0], self.dv[i,0])];
                 if(self.verb>0):
-                    print "[SIMULATOR] %s" % (res[-1].toString());
+                    print ("[SIMULATOR] %s" % (res[-1].toString()))
                 if(self.ENABLE_JOINT_LIMITS):
                     self.v[i,0] = self.DQ_MAX if (self.v[i,0]>0.0) else -self.DQ_MAX;
         
@@ -581,11 +581,11 @@ class Simulator (object):
             for i in np.where(ind_pos_ub)[0]:
                 res = res + [PositionConstraintViolation(self.t, i, self.qMin[7+i,0], self.qMax[7+i,0], self.q[7+i,0], self.v[6+i,0], self.dv[6+i,0])];
                 if(self.verb>0):
-                    print "[SIMULATOR] %s" % (res[-1].toString());
+                    print ("[SIMULATOR] %s" % (res[-1].toString()))
             for i in np.where(ind_pos_lb)[0]:
                 res = res + [PositionConstraintViolation(self.t, i, self.qMin[7+i,0], self.qMax[7+i,0], self.q[7+i,0], self.v[6+i,0], self.dv[6+i,0])];
                 if(self.verb>0):
-                    print "[SIMULATOR] %s" % (res[-1].toString());
+                    print ("[SIMULATOR] %s" % (res[-1].toString()))
                 
             self.q[7:][ind_pos_ub] = self.qMax[7:][ind_pos_ub];
             self.v[6:][ind_pos_ub] = 0.0;
@@ -624,7 +624,7 @@ class Simulator (object):
 #        new_dx_com = np.dot(new_J_com, self.dq);
 #        new_dx_com_int = self.dx_com + dt*self.ddx_com;
         #if(np.linalg.norm(new_dx_com - new_dx_com_int) > 1e-3):
-        #    print "Time %.3f ERROR in integration of com acc"%t, "%.3f"%np.linalg.norm(new_dx_com - new_dx_com_int), new_dx_com, new_dx_com_int;
+        #    print ("Time %.3f ERROR in integration of com acc"%t, "%.3f"%np.linalg.norm(new_dx_com - new_dx_com_int), new_dx_com, new_dx_com_int)
             
             
         ''' END DEBUG '''
@@ -670,12 +670,12 @@ class Simulator (object):
 #                    fx=self.w_lf[0]; fy=self.w_lf[1]; fz=self.w_lf[2];
 #                if(fx+mu[0]*fz<-2*EPS or -fx+mu[0]*fz<-2*EPS):
 #                    if(fz!=0.0 and self.verb>0):
-#                        print "SIMULATOR: friction cone %s x violated, fx=%f, fz=%f, fx/fz=%f" % (contactName,fx,fz,fx/fz);
+#                        print ("SIMULATOR: friction cone %s x violated, fx=%f, fz=%f, fx/fz=%f" % (contactName,fx,fz,fx/fz))
 #                if(fy+mu[0]*fz<-2*EPS or -fy+mu[0]*fz<-2*EPS):
 #                    if(fz!=0.0 and self.verb>0):
-#                        print "SIMULATOR: friction cone %s y violated, fy=%f, fz=%f, fy/fz=%f" % (contactName,fy,fz,fy/fz);
+#                        print ("SIMULATOR: friction cone %s y violated, fy=%f, fz=%f, fy/fz=%f" % (contactName,fy,fz,fy/fz))
 #                if(fz<-2*EPS and self.verb>0):
-#                    print "SIMULATOR: normal force %s z negative, fz=%f" % (contactName,fz);
+#                    print ("SIMULATOR: normal force %s z negative, fz=%f" % (contactName,fz))
 #        else:                
 #            for i in range(len(self.rigidContactConstraints)):
 #                if('lf' in self.rigidContactConstraints[i].name):
@@ -687,11 +687,11 @@ class Simulator (object):
 #                # 4 unilateral for linearized friction cone
 #                if(fx+mu[0]*fz<-EPS or -fx+mu[0]*fz<-EPS):
 #                    if(self.verb>0):
-#                        print "SIMULATOR: friction cone x leg %d violated, fx=%f, fz=%f, fx/fz=%f" % (i,fx,fz,fx/fz);
+#                        print ("SIMULATOR: friction cone x leg %d violated, fx=%f, fz=%f, fx/fz=%f" % (i,fx,fz,fx/fz))
 #                    res = res + [ForceConstraintViolation(self.t*self.dt, self.rigidContactConstraints[i].name+' Fx', f[i*6:i*6+6], zeros(6))];
 #                if(fy+mu[0]*fz<-EPS or -fy+mu[0]*fz<-EPS):
 #                    if(self.verb>0):
-#                        print "SIMULATOR: friction cone y leg %d violated, fy=%f, fz=%f, fy/fz=%f" % (i,fy,fz,fy/fz);
+#                        print ("SIMULATOR: friction cone y leg %d violated, fy=%f, fz=%f, fy/fz=%f" % (i,fy,fz,fy/fz))
 #                    res = res + [ForceConstraintViolation(self.t*self.dt, self.rigidContactConstraints[i].name+' Fy', f[i*6:i*6+6], zeros(6))];
 #                # 4 unilateral for ZMP
 #                if(fz*footSizes[3]-mx<-EPS or fz*footSizes[2]+mx<-EPS):
@@ -707,12 +707,12 @@ class Simulator (object):
 #                # 2 unilateral for linearized moment friction cone Mn (normal moment)
 ##                if(-mz+mu[1]*fz<-EPS or mz+mu[1]*fz<-EPS):
 ##                    if(self.verb>0):
-##                        print "SIMULATOR: friction cone z leg %d violated, mz=%f, fz=%f, mz/fz=%f" % (i,mz,fz,mz/fz);
+##                        print ("SIMULATOR: friction cone z leg %d violated, mz=%f, fz=%f, mz/fz=%f" % (i,mz,fz,mz/fz))
 ##                    res = res + [ForceConstraintViolation(self.t*self.dt, self.rigidContactConstraints[i].name+' Mz', f[i*6:i*6+6], zeros(6))];
 #                # minimum normal force
 #                if(fz<=0.0): #self.fMin-EPS):
 #                    if(self.verb>0):
-#                        print "SIMULATOR: normal force leg %d violated, fz=%f" % (i,fz);
+#                        print ("SIMULATOR: normal force leg %d violated, fz=%f" % (i,fz))
 #                    res = res + [ForceConstraintViolation(self.t*self.dt, self.rigidContactConstraints[i].name+' Fz', f[i*6:i*6+6], zeros(6))];
 #                            
         

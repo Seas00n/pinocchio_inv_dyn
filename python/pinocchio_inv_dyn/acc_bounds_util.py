@@ -25,40 +25,40 @@ EPS = 1e-10;    # tolerance used to check violations
 def isStateViable(q, dq, qMin, qMax, dqMax, ddqMax, verbose=False):
     if(q<qMin-EPS):
         if(verbose):
-            print "State (%f,%f) not viable because q<qMin" % (q,dq);
+            print ("State (%f,%f) not viable because q<qMin" % (q,dq))
         return qMin-q;
     if(q>qMax+EPS):
         if(verbose):
-            print "State (%f,%f) not viable because q>qMax" % (q,dq);
+            print ("State (%f,%f) not viable because q>qMax" % (q,dq))
         return q-qMax;
     if(abs(dq)>dqMax+EPS):
         if(verbose):
-            print "State (%f,%f) not viable because |dq|>dqMax" % (q,dq);
+            print ("State (%f,%f) not viable because |dq|>dqMax" % (q,dq))
         return abs(dq)-dqMax;
     dqMaxViab =   sqrt(max(0,2*ddqMax*(qMax-q)));
     if(dq>dqMaxViab+EPS):
         if(verbose):
-            print "State (%f,%f) not viable because dq>dqMaxViab=%f" % (q,dq,dqMaxViab);
+            print ("State (%f,%f) not viable because dq>dqMaxViab=%f" % (q,dq,dqMaxViab))
         return dq-dqMaxViab;
     dqMinViab = - sqrt(max(0,2*ddqMax*(q-qMin)));
     if(dq<dqMinViab+EPS):
         if(verbose):
-            print "State (%f,%f) not viable because dq<dqMinViab=%f" % (q,dq,dqMinViab);
+            print ("State (%f,%f) not viable because dq<dqMinViab=%f" % (q,dq,dqMinViab))
         return dqMinViab-dq;
 
     if(verbose):
-        print "State (%f,%f) is viable because dq<dqMinViab=%f and dq>dqMaxViab=%f" % (q,dq,dqMinViab,dqMaxViab);
+        print ("State (%f,%f) is viable because dq<dqMinViab=%f and dq>dqMaxViab=%f" % (q,dq,dqMinViab,dqMaxViab))
     return 0.0;
     
 
 def computeVelLimits(q, qMin, qMax, dqMax, ddqMax, verbose=False):
     if(q<qMin-EPS):
         if(verbose):
-            print "State (%f) not viable because q<qMin" % (q);
+            print ("State (%f) not viable because q<qMin" % (q))
         raise ValueError("State not viable because q<qMin: %f" % (qMin-q))
     if(q>qMax+EPS):
         if(verbose):
-            print "State (%f) not viable because q>qMax" % (q);
+            print ("State (%f) not viable because q>qMax" % (q))
         raise ValueError("State not viable because q>qMax: %f" % (q-qMax))
     dqMaxViab = min( dqMax,  sqrt(max(0,2*ddqMax*(qMax-q))));
     dqMinViab = max(-dqMax, -sqrt(max(0,2*ddqMax*(q-qMin))));
@@ -123,7 +123,7 @@ def computeAccLimitsFromViability(q, dq, qMin, qMax, ddqMax, dt, verbose=True):
     else:
         ddq_1 = minus_dq_over_dt;
         if(verbose):
-            print "Error: state (%f,%f) not viable because delta is negative: %f" % (q,dq,delta);
+            print ("Error: state (%f,%f) not viable because delta is negative: %f" % (q,dq,delta))
     
     b = dt_two_dq - dt_ddqMax_dt;
     c = dq_square - two_ddqMax*(q_plus_dt_dq - qMin);
@@ -133,7 +133,7 @@ def computeAccLimitsFromViability(q, dq, qMin, qMax, ddqMax, dt, verbose=True):
     else:
         ddq_2 = minus_dq_over_dt;
         if(verbose):
-            print "Error: state (%f,%f) not viable because delta is negative: %f" % (q,dq,delta)
+            print("Error: state (%f,%f) not viable because delta is negative: %f" % (q,dq,delta))
     ddqUB = max(ddq_1, minus_dq_over_dt);
     ddqLB = min(ddq_2, minus_dq_over_dt);
     return (ddqLB, ddqUB);
@@ -150,7 +150,7 @@ def computeAccLimits(q, dq, qMin, qMax, dqMax, ddqMax, dt, verbose=True, ddqStop
                      IMPOSE_VELOCITY_BOUNDS=True, IMPOSE_VIABILITY_BOUNDS=True, IMPOSE_ACCELERATION_BOUNDS=True):
     viabViol = isStateViable(q, dq, qMin, qMax, dqMax, ddqMax);
     if(viabViol>EPS and verbose):
-        print "WARNING: specified state (q=%f dq=%f) is not viable (violation %f)" % (q,dq,viabViol);
+        print ("WARNING: specified state (q=%f dq=%f) is not viable (violation %f)" % (q,dq,viabViol))
         
     if(ddqStop==None):
         ddqStop=ddqMax;
@@ -186,13 +186,13 @@ def computeAccLimits(q, dq, qMin, qMax, dqMax, ddqMax, dt, verbose=True, ddqStop
     # In case of conflict give priority to position bounds
     if(ddqUBFinal<ddqLBFinal):
         if(verbose):
-            print "Conflict between pos/vel/acc bounds ddqMin %f ddqMax %f" % (ddqLBFinal,ddqUBFinal);
+            print ("Conflict between pos/vel/acc bounds ddqMin %f ddqMax %f" % (ddqLBFinal,ddqUBFinal))
         if(ddqUBFinal==ddqUB[0]):
             ddqLBFinal = ddqUBFinal;
         else:
             ddqUBFinal = ddqLBFinal;
         if(verbose):
-            print "                     New bounds are ddqMin %f ddqMax %f" % (ddqLBFinal,ddqUBFinal);
+            print ("                     New bounds are ddqMin %f ddqMax %f" % (ddqLBFinal,ddqUBFinal))
         
     return (ddqLBFinal,ddqUBFinal);
     

@@ -18,10 +18,11 @@ import time
 
 from pinocchio.robot_wrapper import RobotWrapper as PinocchioRobotWrapper
 from pinocchio.deprecation import deprecated
-import pinocchio.libpinocchio_pywrap as se3
+import pinocchio as se3
 import pinocchio.utils as utils
 from pinocchio.explog import exp
 import numpy as np
+
 
 
 class RobotWrapper(PinocchioRobotWrapper):
